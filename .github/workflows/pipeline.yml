@@ -26,14 +26,7 @@ jobs:
         run: npm run build
       - name: Test
         run: npm test
-      - name: Prepare deployment
-        uses: superfly/flyctl-actions/setup-flyctl@master
-      - name: Deploy
-        if: ${{ github.event_name == 'push' }}
-        run: flyctl deploy --remote-only
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-  tag_release:
+  tag_release_and_deploy:
     if: ${{ github.event_name == 'push' }}
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-20.04
@@ -50,6 +43,25 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
+      - name: Prepare deployment
+        uses: superfly/flyctl-actions/setup-flyctl@master
+        if: ${{ !contains(join(toJson(github.event.commits.*.message)), '#skip') }}
+      - name: Deploy
+        if: ${{ !contains(join(toJson(github.event.commits.*.message)), '#skip') }}
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      - name: Ping about a new deployment
+        # using the commit for v1.0.4, the latest version at time of writing
+        # (though apparently there's been unreleased-but-tagged version since,
+        # dunno what that's about)
+        uses: rjstone/discord-webhook-notify@89b0bf43c2c8514f70d0dcba4a706b904e8a3112
+        if: ${{ !contains(join(toJson(github.event.commits.*.message)), '#skip') }}
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          severity: info
+          text: Build succeeded!
+          description: 'Deployed at https://pokedex-94055262.fly.dev/'
   notify_discord_error:
     if: ${{ github.event_name == 'push' && failure() }}
     needs: [simple_deployment_pipeline, tag_release]
@@ -64,18 +76,3 @@ jobs:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           severity: error
           text: Build failed! See below for details.
-  notify_discord_deployment:
-    if: ${{ github.event_name == 'push' }}
-    needs: [tag_release]
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Ping about a new deployment
-        # using the commit for v1.0.4, the latest version at time of writing
-        # (though apparently there's been unreleased-but-tagged version since,
-        # dunno what that's about)
-        uses: rjstone/discord-webhook-notify@89b0bf43c2c8514f70d0dcba4a706b904e8a3112
-        with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          severity: info
-          text: Build succeeded!
-          description: 'Deployed at https://pokedex-94055262.fly.dev/'
