@@ -64,7 +64,7 @@ jobs:
           description: 'Deployed at https://pokedex-94055262.fly.dev/'
   notify_discord_error:
     if: ${{ github.event_name == 'push' && failure() }}
-    needs: [simple_deployment_pipeline, tag_release]
+    needs: [simple_deployment_pipeline, tag_release_and_deploy]
     runs-on: ubuntu-20.04
     steps:
       - name: Ping about failure
