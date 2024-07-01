@@ -43,6 +43,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install npm dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
       - name: Prepare deployment
         uses: superfly/flyctl-actions/setup-flyctl@master
         if: ${{ !contains(join(toJson(github.event.commits.*.message)), '#skip') }}
