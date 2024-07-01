@@ -64,3 +64,17 @@ jobs:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           severity: error
           text: Build failed! See below for details.
+  notify_discord_deployment:
+    if: ${{ github.event_name == 'push' }}
+    needs: [tag_release]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Ping about a new deployment
+        # using the commit for v1.0.4, the latest version at time of writing
+        # (though apparently there's been unreleased-but-tagged version since,
+        # dunno what that's about)
+        uses: rjstone/discord-webhook-notify@89b0bf43c2c8514f70d0dcba4a706b904e8a3112
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          severity: info
+          description: 'Build succeeded! Deployed at <https://pokedex-94055262.fly.dev/>'
