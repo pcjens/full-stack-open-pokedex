@@ -77,4 +77,4 @@ jobs:
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           severity: info
-          description: 'Build succeeded! Deployed at <https://pokedex-94055262.fly.dev/>'
+          description: 'Build succeeded! Deployed at https://pokedex-94055262.fly.dev/'
