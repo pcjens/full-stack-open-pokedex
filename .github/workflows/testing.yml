@@ -25,4 +25,4 @@ jobs:
       - name: check for skip
         env:
           SHOULD_SKIP: ${{ contains(join(toJson(github.event.commits.*.message)), '#skip') }}
-        run: echo "should skip: $SHOULD_SKIP"
+        run: echo "should skip $SHOULD_SKIP"
