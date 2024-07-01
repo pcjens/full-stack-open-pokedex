@@ -61,8 +61,8 @@ jobs:
         # dunno what that's about)
         uses: rjstone/discord-webhook-notify@89b0bf43c2c8514f70d0dcba4a706b904e8a3112
         env:
-          COMMIT_URL: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+          ERROR_TEXT: Build failed! Problematic commit is <https://github.com/${{ github.repository }}/commit/${{ github.sha }}>
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           severity: error
-          text: Build failed! Problematic commit is <$COMMIT_URL>
+          description: $ERROR_TEXT
