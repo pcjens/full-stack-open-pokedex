@@ -63,4 +63,4 @@ jobs:
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           severity: error
-          description: Build failed! Problematic commit is <https://github.com/${{ github.repository }}/commit/${{ github.sha }}>
+          text: Build failed! See below for details.
