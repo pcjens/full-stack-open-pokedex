@@ -29,6 +29,7 @@ jobs:
       - name: Prepare deployment
         uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy
+        if: ${{ github.event_name == 'push' }}
         run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
