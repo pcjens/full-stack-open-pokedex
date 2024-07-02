@@ -1,9 +1,8 @@
 name: Periodic health checks
 
-# disabled for now to not cause unnecessary traffic
-# on:
-#   schedule:
-#     - cron: "30 * 1,2,3 7 *"
+on:
+  schedule:
+    - cron: "30 * 1,2,3 7 *"
 
 jobs:
   health_endpoint_check:
